@@ -3,7 +3,7 @@
 import * as pdfjsLib from "pdfjs-dist/build/pdf";
 import "pdfjs-dist/build/pdf.worker";
 import { useEffect, useRef, useState } from "react";
-import { Upload, Send, Menu, X } from "lucide-react";
+import { Upload, Send, Menu, X, FileUp } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import chatWithGPT from "./config/GenAi";
 import ReactMarkdown from "react-markdown";
@@ -69,7 +69,8 @@ export default function App() {
   };
                                                                                         
   return (
-    <div className={`flex flex-col h-[92vh] md:h-screen w-full bg-gray-100`}>
+  <div className="flex justify-center items-center">
+    <div className={`md:w-3xl flex flex-col h-[92vh] md:h-screen w-full bg-gray-100`}>
       {/* Header */}
       <div className="flex items-center justify-between p-4 bg-white shadow-md">
         <h2 className="text-lg font-semibold">Let's Chat with Your Doc</h2>
@@ -111,7 +112,12 @@ export default function App() {
           <ReactMarkdown className="prose max-w-none">{msg.text}</ReactMarkdown>
         </div>
       ))}
-      {isLoading && <div className="text-gray-400">Typing...</div>}
+      {isLoading && (
+        <div className="text-gray-400 flex items-center gap-2">
+          <FileUp className="animate-spin" />
+          <span>Loading file...</span>
+        </div>
+      )}
       <div ref={messagesEndRef} />
     </div>
 
@@ -123,42 +129,27 @@ export default function App() {
             {selectedFile.name}
           </div>
         )}
-        <div className="flex items-center gap-2 p-2 bg-gray-100 rounded-full shadow-sm w-full relative">
+        <div className="mb-5 md:mb-0 flex items-center gap-2 p-2 bg-gray-100 rounded-full shadow-sm w-full relative">
           <label htmlFor="pdfUpload" className="cursor-pointer flex items-center px-1">
             <Upload className="w-6 h-6 text-gray-500" />
           </label>
           <input type="file" accept="application/pdf" onChange={handleFileUpload} className="hidden" id="pdfUpload" />
           <input
             type="text"
-            className="flex-1 bg-transparent focus:outline-none text-sm sm:text-base max-w-46 p-1"
+            className="flex-1 bg-transparent w-full focus:outline-none text-sm sm:text-base p-1 h-12"
             placeholder="Ask a question..."
             value={initialPrompt}
             onChange={(e) => setInitialPrompt(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && sendToGpt()}
           />
-          <button onClick={sendToGpt} disabled={isLoading} className="px-1 absolute right-2 sm:relative">
+          <button onClick={sendToGpt} disabled={isLoading} className="px-1 absolute right-2 m-1">
             <Send className="w-6 h-6 text-blue-500" />
           </button>
         </div>
       </div> 
     </div>
+    </div>
   );
 }
 
 
-// <div className="flex items-center gap-2 p-4 bg-white">
-//         <label htmlFor="pdfUpload" className="cursor-pointer">
-//           <Upload className="w-6 h-6 text-gray-500" />
-//         </label>
-//         <input type="file" accept="application/pdf" onChange={handleFileUpload} className="hidden" id="pdfUpload" />
-//         <input
-//           type="text"
-//           className={`flex-1 p-3 border rounded-full focus:outline-none transition-all duration-200 ${input.length > 5 ? "h-16" : "h-12"}`}
-//           placeholder="Ask a question..."
-//           value={initialPrompt}
-//           onChange={(e) => setInitialPrompt(e.target.value)}
-//         />
-//         <button onClick={sendToGpt} disabled={isLoading}>
-//           <Send className="w-6 h-6" />
-//         </button>
-//       </div>
